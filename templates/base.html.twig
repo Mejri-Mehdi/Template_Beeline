@@ -500,7 +500,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ path('app_offre_index') }}" class="nav-link {{ app.request.pathInfo starts with '/offres' ? 'active' : '' }}">
+            <a href="{{ path('agent_offre_index') }}" class="nav-link {{ app.request.pathInfo starts with '/agent/offre' ? 'active' : '' }}">
                 <i class="fas fa-percentage"></i>
                 <span>Offres bancaires</span>
                 <span class="badge">15</span>
@@ -514,16 +514,16 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ path('app_banque_index') }}" class="nav-link {{ app.request.pathInfo starts with '/banque' ? 'active' : '' }}">
+            <a href="{{ path('agent_banque_view') }}" class="nav-link {{ app.request.pathInfo starts with '/agent/banque' ? 'active' : '' }}">
                 <i class="fas fa-landmark"></i>
-                <span>Banques</span>
-                <span class="badge">12</span>
+                <span>Ma Banque</span>
+                <span class="badge">1</span>
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ path('app_agence_index') }}" class="nav-link {{ app.request.pathInfo starts with '/agence' ? 'active' : '' }}">
+            <a href="{{ path('agent_banque_view') }}" class="nav-link {{ app.request.pathInfo starts with '/agent/banque/agence' ? 'active' : '' }}">
                 <i class="fas fa-building"></i>
-                <span>Agences</span>
+                <span>Mes Agences</span>
                 <span class="badge">45</span>
             </a>
         </li>
