@@ -27,12 +27,21 @@ class ClientFinancementController extends AbstractController
         }
 
         if ($request->isMethod('POST')) {
+            $montantDemande = $request->request->get('montant_demande') ?? '0';
+            $dureeMois = (int)($request->request->get('duree_mois') ?? 0);
+            $objetFinancement = $request->request->get('objet_financement') ?? '';
+            
+            if (empty($montantDemande) || $montantDemande === '0') {
+                $this->addFlash('error', 'Veuillez spécifier un montant.');
+                return $this->render('front/financement/request.html.twig', ['banque' => $banque]);
+            }
+            
             $financement = new Financement();
             $financement->setClient($user);
             $financement->setBanque($banque);
-            $financement->setMontantDemande($request->request->get('montant_demande'));
-            $financement->setDureeMois((int)$request->request->get('duree_mois'));
-            $financement->setObjetFinancement($request->request->get('objet_financement'));
+            $financement->setMontantDemande($montantDemande);
+            $financement->setDureeMois($dureeMois);
+            $financement->setObjetFinancement($objetFinancement);
             $financement->setStatut('pending');
 
             try {

@@ -1,0 +1,76 @@
+{% extends 'back/base_agent.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <h2 style="color: var(--dark-gray); font-weight: 700;">Demandes de financement</h2>
+    <p style="color: var(--medium-gray);">{{ banque.nomBq }}</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if financements|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background-color: var(--light-gray);">
+                        <tr>
+                            <th>Client</th>
+                            <th>Montant</th>
+                            <th>Durée</th>
+                            <th>Objet</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fin in financements %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600; color: var(--dark-gray);">{{ fin.client.nom }} {{ fin.client.prenom }}</div>
+                                    <small style="color: var(--medium-gray);">{{ fin.client.email }}</small>
+                                </td>
+                                <td><strong style="color: var(--success);">{{ fin.formattedAmount }}</strong></td>
+                                <td>{{ fin.dureeMois }} mois</td>
+                                <td>{{ fin.objet|length > 40 ? fin.objet|slice(0, 40) ~ '...' : fin.objet }}</td>
+                                <td>{{ fin.dateDemande|date('d/m/Y') }}</td>
+                                <td>
+                                    {% if fin.statut == 'pending' %}
+                                        <span class="badge bg-warning">En attente</span>
+                                    {% elseif fin.statut == 'approved' %}
+                                        <span class="badge bg-success">Approuvé</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Rejeté</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if fin.statut == 'pending' %}
+                                        <div class="btn-group btn-group-sm">
+                                            <form method="post" action="{{ path('agent_financement_approve', {id: fin.id}) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                            <form method="post" action="{{ path('agent_financement_reject', {id: fin.id}) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-cash-coin" style="font-size: 4rem; color: var(--medium-gray);"></i>
+                <p style="color: var(--medium-gray); margin-top: 1rem;">Aucune demande de financement</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -268,28 +268,5 @@
         }
     </style>
     
-    <script>
-        document.getElementById('agenceEditForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validation simple
-            const nom = document.getElementById('nom').value;
-            const banque = document.getElementById('banque').value;
-            const telephone = document.getElementById('telephone').value;
-            const adresse = document.getElementById('adresse').value;
-            
-            if (!nom || !banque || !telephone || !adresse) {
-                alert('Veuillez remplir tous les champs obligatoires (*)');
-                return;
-            }
-            
-            // Simulation de modification
-            alert('Agence modifiée avec succès! (Simulation)');
-            
-            // Redirection vers la liste des agences
-            setTimeout(() => {
-                window.location.href = "{{ path('app_agence_index') }}";
-            }, 1000);
-        });
-    </script>
+    
 {% endblock %}

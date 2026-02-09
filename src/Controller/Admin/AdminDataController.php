@@ -43,4 +43,14 @@ class AdminDataController extends AbstractController
             'financements' => $financements,
         ]);
     }
+
+    #[Route('/services', name: 'admin_services_index')]
+    public function services(\App\Repository\ServiceRepository $serviceRepository): Response
+    {
+        $services = $serviceRepository->findAll();
+
+        return $this->render('admin/service/index.html.twig', [
+            'services' => $services,
+        ]);
+    }
 }

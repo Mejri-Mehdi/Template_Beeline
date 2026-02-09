@@ -1,0 +1,89 @@
+{% extends 'front/base_client.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('client_dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active">Mes rendez-vous</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 style="color: var(--dark-gray); font-weight: 700;">Mes rendez-vous</h2>
+            <p style="color: var(--medium-gray);">Gérez vos rendez-vous bancaires</p>
+        </div>
+        <a href="{{ path('client_rdv_book') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Nouveau rendez-vous
+        </a>
+    </div>
+</div>
+
+{% if rendez_vous|length > 0 %}
+    <div class="row g-4">
+        {% for rdv in rendez_vous %}
+            <div class="col-md-6">
+                <div class="card h-100" style="border-left: 4px solid 
+                    {% if rdv.statut == 'confirmed' %}var(--success)
+                    {% elseif rdv.statut == 'pending' %}var(--warning)
+                    {% elseif rdv.statut == 'completed' %}var(--secondary-blue)
+                    {% else %}var(--medium-gray){% endif %};">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 style="color: var(--dark-gray); font-weight: 600; margin-bottom: 0.5rem;">
+                                    {{ rdv.service.nomService }}
+                                </h5>
+                                <p style="color: var(--medium-gray); font-size: 0.875rem; margin: 0;">
+                                    <i class="bi bi-building"></i> {{ rdv.agence.nomAgence }}
+                                </p>
+                            </div>
+                            <span class="badge {{ rdv.statutBadge }}">{{ rdv.statutLabel }}</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <i class="bi bi-calendar3" style="color: var(--secondary-blue);"></i>
+                                <strong style="color: var(--dark-gray);">{{ rdv.dateRdv|date('d/m/Y') }}</strong>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="bi bi-clock" style="color: var(--secondary-blue);"></i>
+                                <strong style="color: var(--dark-gray);">{{ rdv.heureRdv|date('H:i') }}</strong>
+                            </div>
+                        </div>
+
+                        <div style="background-color: var(--light-gray); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <small style="color: var(--medium-gray); font-weight: 600;">Référence:</small>
+                            <code style="color: var(--dark-gray); font-size: 0.875rem;">{{ rdv.ticketReference }}</code>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('client_rdv_ticket', {id: rdv.id}) }}" class="btn btn-sm btn-outline-primary flex-fill">
+                                <i class="bi bi-ticket-perforated"></i> Ticket
+                            </a>
+                            {% if rdv.statut in ['pending', 'confirmed'] %}
+                                <form method="post" action="{{ path('client_rdv_cancel', {id: rdv.id}) }}" class="flex-fill">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100" onclick="return confirm('Êtes-vous sûr ?')">
+                                        <i class="bi bi-x-circle"></i> Annuler
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-calendar-x" style="font-size: 5rem; color: var(--medium-gray);"></i>
+            <h4 style="color: var(--medium-gray); margin-top: 1.5rem; margin-bottom: 1rem;">Aucun rendez-vous</h4>
+            <p style="color: var(--medium-gray); margin-bottom: 2rem;">Vous n'avez pas encore pris de rendez-vous</p>
+            <a href="{{ path('client_rdv_book') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>Prendre mon premier rendez-vous
+            </a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

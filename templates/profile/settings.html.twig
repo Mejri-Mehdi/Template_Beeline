@@ -1,0 +1,228 @@
+{% set isClient = app.user and 'ROLE_CLIENT' in app.user.roles %}
+{% set isAgent = app.user and 'ROLE_AGENT' in app.user.roles %}
+{% set isAdmin = app.user and 'ROLE_ADMIN' in app.user.roles %}
+
+{% if isClient %}
+    {% set baseTemplate = 'front/base_client.html.twig' %}
+{% elseif isAgent %}
+    {% set baseTemplate = 'back/base_agent.html.twig' %}
+{% elseif isAdmin %}
+    {% set baseTemplate = 'admin/base_admin.html.twig' %}
+{% else %}
+    {% set baseTemplate = 'base.html.twig' %}
+{% endif %}
+
+{% extends baseTemplate %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row" style="max-width: 700px; margin: 0 auto;">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1"><i class="bi bi-gear me-2" style="color: var(--primary-color);"></i>Paramètres</h1>
+                    <p class="text-muted mb-0">Gérez vos préférences et sécurité</p>
+                </div>
+                <a href="{{ path('app_profile_view') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Retour
+                </a>
+            </div>
+
+            <!-- Password Change Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Changer le mot de passe</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Sécurité:</strong> Le mot de passe doit contenir au moins 6 caractères.
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">
+                                Mot de passe actuel <span class="text-danger">*</span>
+                            </label>
+                            <div class="password-wrapper">
+                                <input type="password" class="form-control" id="current_password" 
+                                       name="current_password" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('current_password')">
+                                    <i class="bi bi-eye" id="current_password_icon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">
+                                Nouveau mot de passe <span class="text-danger">*</span>
+                            </label>
+                            <div class="password-wrapper">
+                                <input type="password" class="form-control" id="new_password" 
+                                       name="new_password" required minlength="6">
+                                <button type="button" class="password-toggle" onclick="togglePassword('new_password')">
+                                    <i class="bi bi-eye" id="new_password_icon"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Minimum 6 caractères</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="confirm_password" class="form-label">
+                                Confirmer le nouveau mot de passe <span class="text-danger">*</span>
+                            </label>
+                            <div class="password-wrapper">
+                                <input type="password" class="form-control" id="confirm_password" 
+                                       name="confirm_password" required minlength="6">
+                                <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')">
+                                    <i class="bi bi-eye" id="confirm_password_icon"></i>
+                                </button>
+                            </div>
+                            <div id="password-match-message" class="mt-2"></div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>Modifier le mot de passe
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Account Info Card -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Informations du compte</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Type de compte</label>
+                            <p class="mb-0 fw-bold">
+                                {% if isAdmin %}
+                                    <span class="badge bg-danger">Administrateur</span>
+                                {% elseif isAgent %}
+                                    <span class="badge bg-warning">Agent Bancaire</span>
+                                {% elseif isClient %}
+                                    <span class="badge bg-success">Client</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Statut</label>
+                            <p class="mb-0">
+                                {% if user.statutCompte == 'active' %}
+                                    <span class="badge bg-success">Actif</span>
+                                {% elseif user.statutCompte == 'pending' %}
+                                    <span class="badge bg-warning">En attente</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Bloqué</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <label class="text-muted small">Email de connexion</label>
+                            <p class="mb-0">{{ user.email }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = document.getElementById(fieldId + '_icon');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+    }
+}
+
+// Password match validation
+const newPassword = document.getElementById('new_password');
+const confirmPassword = document.getElementById('confirm_password');
+const matchMessage = document.getElementById('password-match-message');
+
+function checkPasswordMatch() {
+    if (confirmPassword.value === '') {
+        matchMessage.innerHTML = '';
+        return;
+    }
+    
+    if (newPassword.value === confirmPassword.value) {
+        matchMessage.innerHTML = '<small class="text-success"><i class="bi bi-check-circle me-1"></i>Les mots de passe correspondent</small>';
+    } else {
+        matchMessage.innerHTML = '<small class="text-danger"><i class="bi bi-x-circle me-1"></i>Les mots de passe ne correspondent pas</small>';
+    }
+}
+
+newPassword.addEventListener('input', checkPasswordMatch);
+confirmPassword.addEventListener('input', checkPasswordMatch);
+</script>
+
+<style>
+    .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    
+    .password-wrapper input {
+        padding-right: 45px !important;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        padding: 0 12px;
+        transition: color 0.3s;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .password-toggle:hover {
+        color: var(--primary-color);
+    }
+    
+    /* Hide browser's password reveal */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none !important;
+    }
+    
+    input[type="password"]::-webkit-credentials-auto-fill-button,
+    input[type="password"]::-webkit-clear-button {
+        display: none !important;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
+    }
+</style>
+{% endblock %}

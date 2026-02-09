@@ -30,4 +30,22 @@ class ClientBanqueController extends AbstractController
             'agences' => $agences,
         ]);
     }
+
+    #[Route('/autres', name: 'client_autres_banques')]
+    public function autresBanques(\App\Repository\BanqueRepository $banqueRepository): Response
+    {
+        $user = $this->getUser();
+        $userBanque = $user->getBanque();
+        
+        // Get all banks except user's own bank
+        $allBanques = $banqueRepository->findAll();
+        $autresBanques = array_filter($allBanques, function($banque) use ($userBanque) {
+            return !$userBanque || $banque->getId() !== $userBanque->getId();
+        });
+
+        return $this->render('front/banque/autres.html.twig', [
+            'banques' => $autresBanques,
+            'userBanque' => $userBanque,
+        ]);
+    }
 }

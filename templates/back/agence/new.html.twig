@@ -1,17 +1,24 @@
-{% extends 'base.html.twig' %}
+{% extends 'back/base_agent.html.twig' %}
 
 {% block title %}Ajouter une Agence{% endblock %}
-{% block page_title %}Nouvelle Agence{% endblock %}
-{% block breadcrumb %}<a href="{{ path('app_dashboard') }}">Dashboard</a> / <a href="{{ path('app_agence_index') }}">Agences</a> / <span class="active">Nouvelle</span>{% endblock %}
 
 {% block body %}
-    <div class="content-card">
-        <div class="card-header">
-            <h3><i class="fas fa-plus-circle me-2"></i>Ajouter une agence</h3>
-            <a href="{{ path('app_agence_index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i> Retour
-            </a>
-        </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1"><i class="fas fa-plus-circle me-2" style="color: var(--primary-color);"></i>Nouvelle Agence</h1>
+                    <p class="text-muted mb-0">Ajoutez une nouvelle agence bancaire</p>
+                </div>
+                <a href="{{ path('agent_banque_view') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
         
         <form id="agenceForm" class="mt-4">
             <div class="row">
@@ -198,47 +205,33 @@
                 </button>
             </div>
         </form>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+<style>
+    .form-check {
+        margin-bottom: 10px;
+    }
     
-    <style>
-        .form-check {
-            margin-bottom: 10px;
-        }
-        
-        .form-check-input {
-            width: 18px;
-            height: 18px;
-            margin-top: 0.3em;
-        }
-        
-        .form-check-label {
-            margin-left: 8px;
-            font-weight: 500;
-        }
-    </style>
+    .form-check-input {
+        width: 18px;
+        height: 18px;
+        margin-top: 0.3em;
+    }
     
-    <script>
-        document.getElementById('agenceForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validation simple
-            const nom = document.getElementById('nom').value;
-            const banque = document.getElementById('banque').value;
-            const telephone = document.getElementById('telephone').value;
-            const adresse = document.getElementById('adresse').value;
-            
-            if (!nom || !banque || !telephone || !adresse) {
-                alert('Veuillez remplir tous les champs obligatoires (*)');
-                return;
-            }
-            
-            // Simulation d'ajout
-            alert('Agence ajoutée avec succès! (Simulation)');
-            
-            // Redirection vers la liste des agences
-            setTimeout(() => {
-                window.location.href = "{{ path('app_agence_index') }}";
-            }, 1000);
-        });
-    </script>
+    .form-check-label {
+        margin-left: 8px;
+        font-weight: 500;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+</style>
+
+
 {% endblock %}

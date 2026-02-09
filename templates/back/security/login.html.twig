@@ -382,36 +382,6 @@
         <p style="margin-top: 10px; font-size: 0.9rem;">Une connexion sécurisée à vos services bancaires</p>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('loginForm');
-            
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                
-                if (!email || !password) {
-                    alert('Veuillez remplir tous les champs');
-                    return;
-                }
-                
-                alert(`Connexion réussie pour ${email}`);
-                window.location.href = "{{ path('app_dashboard') }}";
-            });
-            
-            const inputs = document.querySelectorAll('input');
-            inputs.forEach(input => {
-                input.addEventListener('focus', function() {
-                    this.parentElement.querySelector('.input-icon').style.color = '#0052cc';
-                });
-                
-                input.addEventListener('blur', function() {
-                    this.parentElement.querySelector('.input-icon').style.color = '#777';
-                });
-            });
-        });
-    </script>
+    
 </body>
 </html>

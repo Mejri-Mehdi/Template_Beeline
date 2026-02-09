@@ -1,0 +1,53 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <h1>Tous les services bancaires</h1>
+    <p class="text-muted">Vue système complète de tous les services</p>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if services|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Banque</th>
+                            <th>Nom du service</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                            <tr>
+                                <td>{{ service.id }}</td>
+                                <td><strong>{{ service.banque.nomBq }}</strong></td>
+                                <td>{{ service.nomService }}</td>
+                                <td>
+                                    {% if service.disponible %}
+                                        <span class="badge bg-success">Actif</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactif</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-3 text-muted">
+                <i class="bi bi-info-circle me-2"></i>
+                Total: <strong>{{ services|length }}</strong> service(s) dans le système
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-list-check text-muted" style="font-size: 4rem;"></i>
+                <p class="text-muted mt-3">Aucun service dans le système</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

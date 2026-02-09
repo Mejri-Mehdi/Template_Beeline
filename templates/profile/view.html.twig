@@ -1,0 +1,166 @@
+{% set isClient = app.user and 'ROLE_CLIENT' in app.user.roles %}
+{% set isAgent = app.user and 'ROLE_AGENT' in app.user.roles %}
+{% set isAdmin = app.user and 'ROLE_ADMIN' in app.user.roles %}
+
+{% if isClient %}
+    {% set baseTemplate = 'front/base_client.html.twig' %}
+{% elseif isAgent %}
+    {% set baseTemplate = 'back/base_agent.html.twig' %}
+{% elseif isAdmin %}
+    {% set baseTemplate = 'admin/base_admin.html.twig' %}
+{% else %}
+    {% set baseTemplate = 'base.html.twig' %}
+{% endif %}
+
+{% extends baseTemplate %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1"><i class="bi bi-person-circle me-2" style="color: var(--primary-color);"></i>Mon Profil</h1>
+                    <p class="text-muted mb-0">Consultez et gérez vos informations personnelles</p>
+                </div>
+                <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">
+                    <i class="bi bi-pencil-square me-2"></i>Modifier mon profil
+                </a>
+            </div>
+
+            <!-- Profile Card -->
+            <div class="row">
+                <!-- Left Column - Photo & Basic Info -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body text-center p-4">
+                            {% if user.photo %}
+                                <img src="{{ asset('uploads/profiles/' ~ user.photo) }}" alt="Photo de profil" 
+                                     class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid var(--primary-color);">
+                            {% else %}
+                                <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 150px; height: 150px; font-size: 4rem;">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <h4 class="mb-1">{{ user.nom }} {{ user.prenom }}</h4>
+                            <p class="text-muted mb-3">
+                                {% if isAdmin %}
+                                    <span class="badge bg-danger">Administrateur</span>
+                                {% elseif isAgent %}
+                                    <span class="badge bg-warning">Agent Bancaire</span>
+                                {% elseif isClient %}
+                                    <span class="badge bg-success">Client</span>
+                                {% endif %}
+                            </p>
+                            
+                            <div class="d-grid gap-2">
+                                <a href="{{ path('app_profile_edit') }}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-camera me-2"></i>Changer la photo
+                                </a>
+                                <a href="{{ path('app_profile_settings') }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-gear me-2"></i>Paramètres
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Detailed Info -->
+                <div class="col-md-8 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informations Personnelles</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Nom</label>
+                                    <p class="mb-0 fw-bold">{{ user.nom }}</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Prénom</label>
+                                    <p class="mb-0 fw-bold">{{ user.prenom }}</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Email</label>
+                                    <p class="mb-0"><i class="bi bi-envelope me-2 text-primary"></i>{{ user.email }}</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Téléphone</label>
+                                    <p class="mb-0">
+                                        <i class="bi bi-telephone me-2 text-success"></i>
+                                        {{ user.telephone ?? 'Non renseigné' }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">CIN</label>
+                                    <p class="mb-0">
+                                        <i class="bi bi-card-text me-2 text-info"></i>
+                                        {{ user.cin ?? 'Non renseigné' }}
+                                    </p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small mb-1">Code Postal</label>
+                                    <p class="mb-0">
+                                        <i class="bi bi-mailbox me-2 text-warning"></i>
+                                        {{ user.codePostal ?? 'Non renseigné' }}
+                                    </p>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="text-muted small mb-1">Adresse</label>
+                                    <p class="mb-0">
+                                        <i class="bi bi-geo-alt me-2 text-danger"></i>
+                                        {{ user.adresse ?? 'Non renseignée' }}
+                                    </p>
+                                </div>
+                                
+                                {% if isClient and user.banque %}
+                                    <div class="col-12">
+                                        <hr>
+                                        <label class="text-muted small mb-1">Banque</label>
+                                        <p class="mb-0">
+                                            <i class="bi bi-building me-2 text-primary"></i>
+                                            <strong>{{ user.banque.nomBq }}</strong>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if isAgent and user.banque %}
+                                    <div class="col-12">
+                                        <hr>
+                                        <label class="text-muted small mb-1">Établissement</label>
+                                        <p class="mb-0">
+                                            <i class="bi bi-building me-2 text-primary"></i>
+                                            <strong>{{ user.banque.nomBq }}</strong>
+                                        </p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .card-header {
+        border-bottom: 2px solid #f0f0f0;
+    }
+</style>
+{% endblock %}

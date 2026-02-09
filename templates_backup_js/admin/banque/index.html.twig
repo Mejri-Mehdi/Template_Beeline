@@ -1,0 +1,52 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <h1>Gestion des banques</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Site web</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for banque in banques %}
+                        <tr>
+                            <td>{{ banque.id }}</td>
+                            <td>{{ banque.nomBq }}</td>
+                            <td>{{ banque.emailBq }}</td>
+                            <td>{{ banque.telephoneBq }}</td>
+                            <td><a href="{{ banque.siteWeb }}" target="_blank">{{ banque.siteWeb }}</a></td>
+                            <td>
+                                {% if banque.statut == 'active' %}
+                                    <span class="badge bg-success">Active</span>
+                                {% elseif banque.statut == 'pending' %}
+                                    <span class="badge bg-warning">En attente</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rejetée</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" class="d-inline">
+                                    <button formaction="{{ path('admin_banque_delete', {id: banque.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr ?')">Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

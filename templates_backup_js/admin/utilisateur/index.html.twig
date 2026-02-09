@@ -1,0 +1,81 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <h1>Gestion des utilisateurs</h1>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Rôle</th>
+                        <th>Banque</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.nom }} {{ user.prenom }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.telephone }}</td>
+                            <td>
+                                {% if user.isAdmin %}
+                                    <span class="badge bg-danger">Admin</span>
+                                {% elseif user.isAgent %}
+                                    <span class="badge bg-info">Agent</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Client</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.banque ? user.banque.nomBq : '-' }}</td>
+                            <td>
+                                {% if user.statutCompte == 'active' %}
+                                    <span class="badge bg-success">Actif</span>
+                                {% elseif user.statutCompte == 'pending' %}
+                                    <span class="badge bg-warning">En attente</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Bloqué</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" class="d-inline">
+                                    {% if user.statutCompte == 'pending' and user.isAgent %}
+                                        <button formaction="{{ path('admin_user_approve', {id: user.id}) }}" class="btn btn-sm btn-success me-1">
+                                            <i class="bi bi-check-circle"></i> Approuver
+                                        </button>
+                                        <button formaction="{{ path('admin_user_reject', {id: user.id}) }}" class="btn btn-sm btn-warning me-1">
+                                            <i class="bi bi-x-circle"></i> Rejeter
+                                        </button>
+                                    {% endif %}
+                                    {% if user.statutCompte == 'blocked' %}
+                                        <button formaction="{{ path('admin_user_unblock', {id: user.id}) }}" class="btn btn-sm btn-success me-1">
+                                            <i class="bi bi-unlock"></i> Débloquer
+                                        </button>
+                                    {% elseif user.statutCompte == 'active' %}
+                                        <button formaction="{{ path('admin_user_block', {id: user.id}) }}" class="btn btn-sm btn-warning me-1">
+                                            <i class="bi bi-lock"></i> Bloquer
+                                        </button>
+                                    {% endif %}
+                                    <button formaction="{{ path('admin_user_delete', {id: user.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr ?')">
+                                        <i class="bi bi-trash"></i> Supprimer
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

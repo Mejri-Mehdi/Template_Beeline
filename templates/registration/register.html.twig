@@ -11,6 +11,7 @@
         html {
             scroll-behavior: smooth;
             height: auto;
+            overflow-x: hidden;
         }
         
         * {
@@ -24,10 +25,12 @@
             min-height: 100vh;
             height: auto;
             width: 100%;
+            max-width: 100vw;
             background: linear-gradient(135deg, #1a4d8f 0%, #0f2849 50%, #1e3a5f 100%);
             background-attachment: fixed;
             padding: 40px 20px;
             margin: 0;
+            overflow-x: hidden;
         }
         
         body::before {
@@ -166,6 +169,61 @@
         .form-section-title i {
             color: #3b82f6;
             font-size: 1.1rem;
+        }
+        
+        /* CRITICAL: Hide browser's default password reveal eye to prevent double icon */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none !important;
+        }
+        
+        input[type="password"]::-webkit-credentials-auto-fill-button,
+        input[type="password"]::-webkit-clear-button {
+            display: none !important;
+        }
+        
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-wrapper input {
+            padding-right: 45px !important;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            height: 100%;
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0 12px;
+            transition: color 0.3s;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .password-toggle:hover {
+            color: #3b82f6;
+        }
+        
+        .password-toggle i {
+            font-size: 1.1rem;
+        }
+        
+        .password-match-indicator {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
         }
         
         .form-group {
@@ -494,9 +552,9 @@
                 <input type="tel" name="telephone" class="form-control" placeholder="+216 XX XXX XXX" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="clientBankSelection">
                 <label class="form-label">Banque <span class="required-star">*</span></label>
-                <select name="banque" class="form-select" required>
+                <select name="banque" id="banque_select" class="form-select" required>
                     <option value="">-- Sélectionnez une banque --</option>
                     {% for banque in banques %}
                         <option value="{{ banque.id }}">{{ banque.nomBq }}</option>
@@ -508,9 +566,120 @@
                 <i class="bi bi-shield-lock-fill"></i> Sécurité
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Mot de passe <span class="required-star">*</span></label>
-                <input type="password" name="plainPassword" class="form-control" placeholder="Minimum 6 caractères" required minlength="6">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe <span class="required-star">*</span></label>
+                        <div class="password-wrapper">
+                            <input type="password" id="plainPassword" name="plainPassword" class="form-control" 
+                                   placeholder="Minimum 6 caractères" required minlength="6">
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('plainPassword', 'eyeIcon1')">
+                                <i class="bi bi-eye" id="eyeIcon1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Confirmer mot de passe <span class="required-star">*</span></label>
+                        <div class="password-wrapper">
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" 
+                                   placeholder="Répétez le mot de passe" required minlength="6">
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword', 'eyeIcon2')">
+                                <i class="bi bi-eye" id="eyeIcon2"></i>
+                            </button>
+                            <span class="password-match-indicator" id="passwordMatchIndicator"></span>
+                        </div>
+                        <div id="passwordMatchError" class="text-danger small mt-1" style="display: none;">
+                            Les mots de passe ne correspondent pas
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bank Details Section - Only for Agents -->
+            <div id="bankDetailsSection" style="display: none;">
+                <div class="form-section-title">
+                    <i class="bi bi-building"></i> Informations de la banque
+                    <small style="font-size: 0.75rem; font-weight: 400; color: #64748b; margin-left: 10px;">
+                        (Banque existante ou nouvelle)
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nom de la banque <span class="required-star">*</span></label>
+                    <select id="bank_name_select" name="bank_name_select" class="form-select">
+                        <option value="">-- Sélectionnez une banque --</option>
+                        {% for banque in banques %}
+                            <option value="{{ banque.nomBq }}">{{ banque.nomBq }}</option>
+                        {% endfor %}
+                        <option value="autre">Autre (nouvelle banque)</option>
+                    </select>
+                    <small class="text-muted">Sélectionnez votre banque ou choisissez "Autre" pour en ajouter une nouvelle</small>
+                </div>
+
+                <div class="form-group" id="custom_bank_name_field" style="display: none;">
+                    <label class="form-label">Nom de la nouvelle banque <span class="required-star">*</span></label>
+                    <input type="text" id="bank_name_custom" name="bank_name_custom" class="form-control" 
+                           placeholder="Ex: Banque Internationale de Tunisie (BIT)">
+                    <small class="text-muted">Tapez le nom complet de votre banque</small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Identifiant agent <span class="required-star">*</span></label>
+                            <input type="text" id="agent_identifiant" name="agent_identifiant" class="form-control" 
+                                   placeholder="Votre ID dans la banque">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Email de la banque <span class="required-star">*</span></label>
+                            <input type="email" id="bank_email" name="bank_email" class="form-control" 
+                                   placeholder="contact@banque.tn">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Type de banque <span class="required-star">*</span></label>
+                            <select id="bank_type" name="bank_type" class="form-select">
+                                <option value="">-- Sélectionnez un type --</option>
+                                <option value="islamique">Islamique</option>
+                                <option value="publique">Publique</option>
+                                <option value="privee">Privée</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Code postal <span class="required-star">*</span></label>
+                            <input type="text" id="bank_postal_code" name="bank_postal_code" class="form-control" 
+                                   placeholder="1000" pattern="[0-9]{4}" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Adresse de la banque <span class="required-star">*</span></label>
+                    <textarea id="bank_address" name="bank_address" class="form-control" rows="3" 
+                              placeholder="Adresse complète du siège ou de votre agence"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Documents justificatifs <span style="color: #64748b;">(optionnel)</span></label>
+                    <input type="file" id="bank_documents" name="bank_documents" class="form-control" 
+                           accept=".pdf,.jpg,.jpeg,.png" multiple>
+                    <small class="text-muted">Formats acceptés: PDF, JPG, PNG. Plusieurs fichiers autorisés.</small>
+                </div>
+
+                <div class="alert alert-info" style="border-left: 4px solid #3b82f6; background: #eff6ff; border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Information:</strong> Votre demande sera examinée par un administrateur qui vérifiera si votre banque existe déjà dans le système ou s'il faut l'ajouter.
+                </div>
             </div>
 
             <button type="submit" class="btn-register">
@@ -534,5 +703,117 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+
+        // Password match validation
+        const plainPassword = document.getElementById('plainPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const matchIndicator = document.getElementById('passwordMatchIndicator');
+        const matchError = document.getElementById('passwordMatchError');
+
+        function validatePasswordMatch() {
+            if (confirmPassword.value === '') {
+                matchIndicator.innerHTML = '';
+                matchError.style.display = 'none';
+                return true;
+            }
+
+            if (plainPassword.value === confirmPassword.value) {
+                matchIndicator.innerHTML = '<i class="bi bi-check-circle-fill text-success ms-2"></i>';
+                matchError.style.display = 'none';
+                return true;
+            } else {
+                matchIndicator.innerHTML = '<i class="bi bi-x-circle-fill text-danger ms-2"></i>';
+                matchError.style.display = 'block';
+                return false;
+            }
+        }
+
+        confirmPassword.addEventListener('keyup', validatePasswordMatch);
+        plainPassword.addEventListener('keyup', validatePasswordMatch);
+
+        // Show/hide bank details based on role
+        const roleRadios = document.querySelectorAll('input[name="role"]');
+        const bankDetailsSection = document.getElementById('bankDetailsSection');
+        const clientBankSelection = document.getElementById('clientBankSelection');
+        const bankSelectDropdown = document.getElementById('banque_select');
+        const bankFields = ['bank_name', 'agent_identifiant', 'bank_email', 'bank_type', 'bank_postal_code', 'bank_address'];
+
+        function toggleBankDetails() {
+            const selectedRole = document.querySelector('input[name="role"]:checked').value;
+            
+            if (selectedRole === 'agent') {
+                // Agent: Show bank details section, hide dropdown
+                bankDetailsSection.style.display = 'block';
+                clientBankSelection.style.display = 'none';
+                bankSelectDropdown.required = false;
+                
+                // Make bank fields required for agents
+                bankFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) field.required = true;
+                });
+            } else {
+                // Client: Hide bank details section, show dropdown
+                bankDetailsSection.style.display = 'none';
+                clientBankSelection.style.display = 'block';
+                bankSelectDropdown.required = true;
+                
+                // Make bank fields not required for clients
+                bankFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) field.required = false;
+                });
+            }
+        }
+
+        roleRadios.forEach(radio => {
+            radio.addEventListener('change', toggleBankDetails);
+        });
+
+        // Handle bank name dropdown - show/hide custom input when "Autre" is selected
+        const bankNameSelect = document.getElementById('bank_name_select');
+        const customBankNameField = document.getElementById('custom_bank_name_field');
+        const bankNameCustomInput = document.getElementById('bank_name_custom');
+
+        if (bankNameSelect) {
+            bankNameSelect.addEventListener('change', function() {
+                if (this.value === 'autre') {
+                    customBankNameField.style.display = 'block';
+                    bankNameCustomInput.required = true;
+                    bankNameSelect.required = false;
+                } else {
+                    customBankNameField.style.display = 'none';
+                    bankNameCustomInput.required = false;
+                    bankNameSelect.required = true;
+                }
+            });
+        }
+
+        // Form submission validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!validatePasswordMatch()) {
+                e.preventDefault();
+                alert('Les mots de passe ne correspondent pas. Veuillez vérifier.');
+                return false;
+            }
+        });
+    </script>
 </body>
 </html>

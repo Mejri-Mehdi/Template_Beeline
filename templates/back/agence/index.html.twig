@@ -184,45 +184,5 @@
         </nav>
     </div>
     
-    <script>
-        document.getElementById('filterBanque').addEventListener('change', function() {
-            const banqueId = this.value;
-            if (banqueId) {
-                alert('Filtrage par banque: ' + this.options[this.selectedIndex].text);
-            }
-        });
-        
-        // Fonction pour afficher les détails d'une agence
-        function showAgenceDetails(id) {
-            const agences = {
-                1: {nom: "Agence Zitouna Tunis Centre", banque: "Banque Zitouna", adresse: "Avenue Habib Bourguiba, Tunis", horaires: "08:00-17:00", tel: "70 100 101", statut: "Actif"},
-                2: {nom: "Agence Zitouna La Marsa", banque: "Banque Zitouna", adresse: "La Marsa, Tunis", horaires: "08:00-17:00", tel: "70 100 102", statut: "Actif"},
-                3: {nom: "Agence Zitouna Sousse", banque: "Banque Zitouna", adresse: "Rue Habib Thameur, Sousse", horaires: "08:00-16:00", tel: "73 100 103", statut: "Actif"},
-                4: {nom: "Agence Amen Bank Tunis", banque: "Amen Bank", adresse: "Avenue de la Liberté, Tunis", horaires: "08:00-17:00", tel: "70 101 001", statut: "Actif"}
-            };
-            
-            const agence = agences[id];
-            if (agence) {
-                const message = `
-                Détails de l'agence:
-                
-                Nom: ${agence.nom}
-                Banque: ${agence.banque}
-                Adresse: ${agence.adresse}
-                Horaires: ${agence.horaires}
-                Téléphone: ${agence.tel}
-                Statut: ${agence.statut}
-                `;
-                alert(message);
-            }
-        }
-        
-        // Fonction pour supprimer une agence
-        function deleteAgence(id, nom) {
-            if (confirm(`Êtes-vous sûr de vouloir supprimer l'agence "${nom}" (ID: ${id})?`)) {
-                alert(`Agence "${nom}" supprimée (simulation)`);
-                // En production : requête AJAX pour suppression
-            }
-        }
-    </script>
+    
 {% endblock %}

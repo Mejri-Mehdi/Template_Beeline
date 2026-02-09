@@ -36,6 +36,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $telephone = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $cin = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $codePostal = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
     #[ORM\Column(length: 20)]
     private ?string $statut_compte = 'pending'; // pending, active, blocked
 
@@ -223,6 +235,50 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFullName(): string
     {
         return $this->prenom . ' ' . $this->nom;
+    }
+
+    public function getCin(): ?string
+    {
+        return $this->cin;
+    }
+
+    public function setCin(?string $cin): static
+    {
+        $this->cin = $cin;
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): static
+    {
+        $this->adresse = $adresse;
+        return $this;
+    }
+
+    public function getCodePostal(): ?string
+    {
+        return $this->codePostal;
+    }
+
+    public function setCodePostal(?string $codePostal): static
+    {
+        $this->codePostal = $codePostal;
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
+        return $this;
     }
 
     public function isAdmin(): bool

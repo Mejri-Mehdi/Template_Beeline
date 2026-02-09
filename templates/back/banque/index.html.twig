@@ -268,14 +268,5 @@
         </nav>
     </div>
     
-    <script>
-        // Fonction pour supprimer une banque
-        function deleteBanque(id, nom) {
-            if (confirm(`Êtes-vous sûr de vouloir supprimer la banque "${nom}" (ID: ${id})?`)) {
-                alert(`Banque "${nom}" supprimée (simulation)`);
-                // En production : requête AJAX pour suppression
-                // window.location.href = "/banque/" + id + "/delete";
-            }
-        }
-    </script>
+    
 {% endblock %}

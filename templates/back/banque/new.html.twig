@@ -312,27 +312,5 @@
         }
     </style>
     
-    <script>
-        document.getElementById('banqueForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validation simple
-            const nom = document.getElementById('nom').value;
-            const telephone = document.getElementById('telephone').value;
-            const email = document.getElementById('email').value;
-            
-            if (!nom || !telephone || !email) {
-                alert('Veuillez remplir tous les champs obligatoires (*)');
-                return;
-            }
-            
-            // Simulation d'ajout
-            alert('Banque ajoutée avec succès! (Simulation)');
-            
-            // Redirection vers la liste des banques
-            setTimeout(() => {
-                window.location.href = "{{ path('app_banque_index') }}";
-            }, 1000);
-        });
-    </script>
+    
 {% endblock %}
