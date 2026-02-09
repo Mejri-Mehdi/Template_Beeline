@@ -1,0 +1,66 @@
+{% extends 'back/base_agent.html.twig' %}
+
+{% block title %}Offres bancaires - Agent{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>Offres bancaires</h2>
+        <p class="text-muted">{{ banque.nomBq }}</p>
+    </div>
+    <a href="{{ path('agent_offre_new') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i>Nouvelle offre
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if offres|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Type</th>
+                            <th>Taux</th>
+                            <th>Date début</th>
+                            <th>Date fin</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for offre in offres %}
+                            <tr>
+                                <td><strong>{{ offre.titre }}</strong></td>
+                                <td>{{ offre.typeOffre }}</td>
+                                <td>{{ offre.taux }}%</td>
+                                <td>{{ offre.dateDebut ? offre.dateDebut|date('d/m/Y') : '-' }}</td>
+                                <td>{{ offre.dateFin ? offre.dateFin|date('d/m/Y') : '-' }}</td>
+                                <td>
+                                    <span class="badge {{ offre.active ? 'bg-success' : 'bg-secondary' }}">
+                                        {{ offre.active ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ path('agent_offre_edit', {id: offre.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-tag" style="font-size: 3rem; color: var(--medium-gray);"></i>
+                <p class="text-muted mt-3">Aucune offre</p>
+                <a href="{{ path('agent_offre_new') }}" class="btn btn-primary mt-2">
+                    <i class="bi bi-plus-circle me-2"></i>Créer la première offre
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

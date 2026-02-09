@@ -1,0 +1,79 @@
+{% extends 'back/base_agent.html.twig' %}
+
+{% block body %}
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h2 style="color: var(--dark-gray); font-weight: 700;">Offres bancaires</h2>
+        <p style="color: var(--medium-gray);">{{ banque.nomBq }}</p>
+    </div>
+    <a href="{{ path('agent_offre_new') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nouvelle offre
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if offres|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background-color: var(--light-gray);">
+                        <tr>
+                            <th>Titre</th>
+                            <th>Type</th>
+                            <th>Période</th>
+                            <th>Taux</th>
+                            <th>Actif</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for offre in offres %}
+                            <tr>
+                                <td style="font-weight: 600; color: var(--dark-gray);">{{ offre.titre }}</td>
+                                <td><span class="badge bg-info">{{ offre.typeOffre|title }}</span></td>
+                                <td>
+                                    <small>
+                                        {{ offre.dateDebut|date('d/m/Y') }} - {{ offre.dateFin|date('d/m/Y') }}
+                                    </small>
+                                </td>
+                                <td>
+                                    {% if offre.tauxInteret %}
+                                        <strong>{{ offre.tauxInteret }}%</strong>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if offre.isCurrentlyActive() %}
+                                        <span class="badge bg-success">Actif</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Expiré</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('agent_offre_edit', {id: offre.id}) }}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('agent_offre_delete', {id: offre.id}) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr ?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-tag" style="font-size: 4rem; color: var(--medium-gray);"></i>
+                <p style="color: var(--medium-gray); margin-top: 1rem;">Aucune offre</p>
+                <a href="{{ path('agent_offre_new') }}" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle"></i> Créer la première offre
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

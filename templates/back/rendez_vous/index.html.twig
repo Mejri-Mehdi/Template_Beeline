@@ -1,0 +1,60 @@
+{% extends 'back/base_agent.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <h2 style="color: var(--dark-gray); font-weight: 700;">Tous les rendez-vous</h2>
+    <p style="color: var(--medium-gray);">{{ banque.nomBq }}</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if rendez_vous|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background-color: var(--light-gray);">
+                        <tr>
+                            <th>Client</th>
+                            <th>Service</th>
+                            <th>Agence</th>
+                            <th>Date</th>
+                            <th>Heure</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rdv in rendez_vous %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600; color: var(--dark-gray);">{{ rdv.client.nom }} {{ rdv.client.prenom }}</div>
+                                    <small style="color: var(--medium-gray);">{{ rdv.client.email }}</small>
+                                </td>
+                                <td>{{ rdv.service.nomService }}</td>
+                                <td>{{ rdv.agence.nomAgence }}</td>
+                                <td>{{ rdv.dateRdv|date('d/m/Y') }}</td>
+                                <td><strong>{{ rdv.heureRdv|date('H:i') }}</strong></td>
+                                <td><span class="badge {{ rdv.statutBadge }}">{{ rdv.statutLabel }}</span></td>
+                                <td>
+                                    <form method="post" action="{{ path('agent_rdv_update_status', {id: rdv.id}) }}" class="d-inline">
+                                        <select name="statut" class="form-select form-select-sm d-inline-block w-auto me-2" onchange="this.form.submit()">
+                                            <option value="pending" {{ rdv.statut == 'pending' ? 'selected' : '' }}>En attente</option>
+                                            <option value="confirmed" {{ rdv.statut == 'confirmed' ? 'selected' : '' }}>Confirmé</option>
+                                            <option value="completed" {{ rdv.statut == 'completed' ? 'selected' : '' }}>Complété</option>
+                                            <option value="cancelled" {{ rdv.statut == 'cancelled' ? 'selected' : '' }}>Annulé</option>
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-calendar-x" style="font-size: 4rem; color: var(--medium-gray);"></i>
+                <p style="color: var(--medium-gray); margin-top: 1rem;">Aucun rendez-vous</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

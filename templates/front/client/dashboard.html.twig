@@ -1,0 +1,148 @@
+{% extends 'front/base_client.html.twig' %}
+
+{% block body %}
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card" style="border-left: 4px solid var(--secondary-blue);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p style="color: var(--medium-gray); margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600;">Rendez-vous</p>
+                        <h3 style="color: var(--dark-gray); font-weight: 700; margin: 0;">{{ stats.total_rdv }}</h3>
+                    </div>
+                    <div style="width: 48px; height: 48px; background: var(--light-blue); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-calendar-check" style="font-size: 1.5rem; color: var(--secondary-blue);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card" style="border-left: 4px solid var(--success);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p style="color: var(--medium-gray); margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600;">Financements</p>
+                        <h3 style="color: var(--dark-gray); font-weight: 700; margin: 0;">{{ stats.total_financements }}</h3>
+                    </div>
+                    <div style="width: 48px; height: 48px; background: #ecfdf5; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-cash-coin" style="font-size: 1.5rem; color: var(--success);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card" style="border-left: 4px solid var(--warning);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p style="color: var(--medium-gray); margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600;">Offres actives</p>
+                        <h3 style="color: var(--dark-gray); font-weight: 700; margin: 0;">{{ stats.active_offres }}</h3>
+                    </div>
+                    <div style="width: 48px; height: 48px; background: #fffbeb; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-tag" style="font-size: 1.5rem; color: var(--warning);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card" style="border-left: 4px solid var(--primary-blue);">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p style="color: var(--medium-gray); margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 600;">Ma Banque</p>
+                        <h3 style="color: var(--dark-gray); font-weight: 700; margin: 0; font-size: 1.2rem;">{{ app.user.banque.nomBq }}</h3>
+                    </div>
+                    <div style="width: 48px; height: 48px; background: var(--light-blue); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-building" style="font-size: 1.5rem; color: var(--primary-blue);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white" style="border-bottom: 1px solid var(--border-gray); padding: 1.25rem;">
+                <h5 style="color: var(--dark-gray); font-weight: 600; margin: 0;">
+                    <i class="bi bi-calendar-check text-primary me-2"></i>Prochains rendez-vous
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_rdv|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for rdv in recent_rdv %}
+                            <div class="list-group-item px-0 py-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 style="color: var(--dark-gray); margin-bottom: 0.25rem;">{{ rdv.service.nomService }}</h6>
+                                        <p style="color: var(--medium-gray); font-size: 0.875rem; margin: 0;">
+                                            <i class="bi bi-calendar3"></i> {{ rdv.dateRdv|date('d/m/Y') }} à {{ rdv.heureRdv|date('H:i') }}
+                                        </p>
+                                    </div>
+                                    <span class="badge {{ rdv.statutBadge }}">{{ rdv.statutLabel }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ path('client_rdv_my_appointments') }}" class="btn btn-outline-primary btn-sm">Voir tout</a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-calendar-x" style="font-size: 3rem; color: var(--medium-gray);"></i>
+                        <p style="color: var(--medium-gray); margin-top: 1rem; margin-bottom: 1rem;">Aucun rendez-vous</p>
+                        <a href="{{ path('client_rdv_book') }}" class="btn btn-primary btn-sm">Prendre rendez-vous</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white" style="border-bottom: 1px solid var(--border-gray); padding: 1.25rem;">
+                <h5 style="color: var(--dark-gray); font-weight: 600; margin: 0;">
+                    <i class="bi bi-tag text-warning me-2"></i>Offres en cours
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if active_offres|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for offre in active_offres %}
+                            <div class="list-group-item px-0 py-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 style="color: var(--dark-gray); margin-bottom: 0.25rem;">{{ offre.titre }}</h6>
+                                        <p style="color: var(--medium-gray); font-size: 0.875rem; margin: 0;">
+                                            Jusqu'au {{ offre.dateFin|date('d/m/Y') }}
+                                        </p>
+                                    </div>
+                                    {% if offre.tauxInteret %}
+                                        <span class="badge bg-warning">{{ offre.tauxInteret }}%</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ path('client_offres') }}" class="btn btn-outline-primary btn-sm">Voir toutes les offres</a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-tags" style="font-size: 3rem; color: var(--medium-gray);"></i>
+                        <p style="color: var(--medium-gray); margin-top: 1rem;">Aucune offre disponible</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

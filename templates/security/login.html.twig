@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Beeline Banking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        html {
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-width: 100vw;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            max-width: 100vw;
+            background: linear-gradient(135deg, #0f2849 0%, #1a4d8f 50%, #1e3a5f 100%);
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            overflow-x: hidden;
+            margin: 0;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent);
+            top: -350px;
+            right: -200px;
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.08), transparent);
+            bottom: -250px;
+            left: -150px;
+            border-radius: 50%;
+            animation: pulse 6s ease-in-out infinite 1s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.15); opacity: 0.8; }
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 550px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: 30px;
+            padding: 4.5rem 4rem;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #1e40af, #3b82f6, #f59e0b, #3b82f6, #1e40af);
+            background-size: 300% 100%;
+            animation: shimmer 4s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 0% 0; }
+            100% { background-position: 300% 0; }
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .logo-image {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            display: block;
+            animation: fadeInDown 0.8s ease-out;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+            transition: transform 0.5s ease;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .logo-image:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .welcome-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle-text {
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.875rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+        }
+        
+        .form-label i {
+            color: #3b82f6;
+            margin-right: 0.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1.1rem 1.35rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+            padding: 0.5rem;
+        }
+        
+        .password-toggle:hover {
+            color: #3b82f6;
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1.75rem 0;
+        }
+        
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+        
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            accent-color: #3b82f6;
+        }
+        
+        .checkbox-wrapper label {
+            font-size: 0.9rem;
+            color: #475569;
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .forgot-link {
+            font-size: 0.9rem;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .forgot-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3b82f6;
+            transition: width 0.3s;
+        }
+        
+        .forgot-link:hover::after {
+            width: 100%;
+        }
+        
+        .forgot-link:hover {
+            color: #1e3a8a;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 1.3rem;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #f59e0b 100%);
+            background-size: 200% 100%;
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 25px rgba(30, 58, 138, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .btn-login:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(30, 58, 138, 0.5);
+            background-position: right center;
+        }
+        
+        .btn-login:active {
+            transform: translateY(-1px);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2.5rem 0;
+            gap: 1rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+        }
+        
+        .divider span {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .signup-link {
+            text-align: center;
+            font-size: 1rem;
+            color: #475569;
+        }
+        
+        .signup-link a {
+            color: #3b82f6;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .signup-link a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3b82f6;
+            transition: width 0.3s;
+        }
+        
+        .signup-link a:hover::after {
+            width: 100%;
+        }
+        
+        .signup-link a:hover {
+            color: #1e3a8a;
+        }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-home a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-home a:hover {
+            color: #3b82f6;
+            transform: translateX(-4px);
+        }
+        
+        .alert {
+            padding: 1.25rem;
+            border-radius: 14px;
+            margin-bottom: 2rem;
+            border-left: 5px solid;
+            font-size: 0.9rem;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #991b1b;
+            border-left-color: #ef4444;
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 2.5rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #0c4a6e;
+            font-weight: 600;
+        }
+        
+        .security-badge i {
+            color: #3b82f6;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-section">
+                <img src="{{ asset('images/beeline-logo.png') }}" alt="Beeline Banking" class="logo-image">
+                <h1 class="welcome-text">Bienvenue</h1>
+                <p class="subtitle-text">Connectez-vous à votre espace Beeline</p>
+            </div>
+
+            {% if error %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="bi bi-envelope-fill"></i>Adresse email
+                    </label>
+                    <input type="email" 
+                           value="{{ last_username }}" 
+                           name="_username" 
+                           id="username" 
+                           class="form-control" 
+                           placeholder="votre.email@exemple.com"
+                           autocomplete="email"
+                           required 
+                           autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="bi bi-lock-fill"></i>Mot de passe
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" 
+                               name="_password" 
+                               id="password" 
+                               class="form-control" 
+                               placeholder="Entrez votre mot de passe"
+                               autocomplete="current-password"
+                               required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="bi bi-eye" id="eye-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <div class="remember-forgot">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" name="_remember_me" id="remember_me">
+                        <label for="remember_me">Se souvenir de moi</label>
+                    </div>
+                    <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Nouveau client ?</span>
+            </div>
+
+            <div class="signup-link">
+                Pas encore de compte ? <a href="{{ path('app_register') }}">Créer un compte</a>
+            </div>
+
+            <div class="security-badge">
+                <i class="bi bi-shield-check-fill"></i>
+                <span>Connexion sécurisée avec cryptage SSL 256-bit</span>
+            </div>
+
+            <div class="back-home">
+                <a href="{{ path('app_home') }}">
+                    <i class="bi bi-arrow-left"></i>
+                    Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+            }
+        }
+    </script>
+</body>
+</html>

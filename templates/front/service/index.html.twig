@@ -1,0 +1,89 @@
+{% extends 'front/base_client.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <h1 class="mb-3">
+        <i class="bi bi-list-check text-primary"></i> Services disponibles
+    </h1>
+    <p class="text-muted">Découvrez nos services bancaires</p>
+</div>
+
+{% if services|length > 0 %}
+    <div class="row g-4">
+        {% for service in services %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 service-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="icon-circle me-3">
+                                <i class="bi bi-briefcase"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1">{{ service.nomService }}</h5>
+                                {% if service.dureeEstimee %}
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock"></i> {{ service.dureeEstimee }} min
+                                    </small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if service.description %}
+                            <p class="text-secondary mb-3">{{ service.description }}</p>
+                        {% endif %}
+
+                        <div class="mt-auto">
+                            {% if service.disponible %}
+                                <span class="badge bg-success w-100 py-2">
+                                    <i class="bi bi-check-circle"></i> Disponible
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary w-100 py-2">
+                                    <i class="bi bi-x-circle"></i> Non disponible
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if service.disponible %}
+                        <div class="card-footer bg-transparent border-0 pt-0">
+                            <a href="{{ path('client_rdv_book') }}" class="btn btn-primary w-100">
+                                <i class="bi bi-calendar-plus"></i> Prendre rendez-vous
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-inbox text-muted" style="font-size: 5rem;"></i>
+            <h4 class="text-muted mt-4">Aucun service disponible</h4>
+            <p class="text-muted">Les services seront bientôt disponibles.</p>
+        </div>
+    </div>
+{% endif %}
+
+<style>
+    .service-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05) !important;
+    }
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+    }
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+</style>
+{% endblock %}

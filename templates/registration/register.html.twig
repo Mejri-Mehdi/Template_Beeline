@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Beeline Banking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+            height: auto;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            height: auto;
+            width: 100%;
+            background: linear-gradient(135deg, #1a4d8f 0%, #0f2849 50%, #1e3a5f 100%);
+            background-attachment: fixed;
+            padding: 40px 20px;
+            margin: 0;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.08), transparent);
+            top: -400px;
+            right: -200px;
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent);
+            bottom: -300px;
+            left: -150px;
+            border-radius: 50%;
+            animation: pulse 6s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .register-container {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+            z-index: 10;
+            margin: 0 auto;
+        }
+        
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: 30px;
+            padding: 4rem 3.5rem;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .register-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #f59e0b, #1e40af, #f59e0b);
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .logo-image {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            display: block;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
+            transition: transform 0.5s ease;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .logo-image:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .welcome-text {
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle-text {
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+        
+        .form-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 2.5rem 0 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .form-section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #e2e8f0, transparent);
+        }
+        
+        .form-section-title i {
+            color: #3b82f6;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            letter-spacing: 0.3px;
+        }
+        
+        .required-star {
+            color: #f59e0b;
+            margin-left: 3px;
+            font-weight: 700;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        
+        .role-option {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .role-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .role-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .role-option:hover .role-card::before {
+            left: 100%;
+        }
+        
+        .role-option input[type="radio"]:checked + .role-card {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(245, 158, 11, 0.05));
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.2);
+        }
+        
+        .role-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+        
+        .role-option:hover .role-icon {
+            transform: scale(1.15);
+        }
+        
+        .role-name {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .role-desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        
+        .btn-register {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #f59e0b 100%);
+            background-size: 200% 100%;
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 25px rgba(30, 58, 138, 0.4);
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-register::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .btn-register:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(30, 58, 138, 0.5);
+            background-position: right center;
+        }
+        
+        .btn-register:active {
+            transform: translateY(-1px);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2.5rem 0;
+            gap: 1rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+        }
+        
+        .divider span {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .login-link {
+            text-align: center;
+            font-size: 1rem;
+            color: #475569;
+        }
+        
+        .login-link a {
+            color: #3b82f6;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .login-link a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3b82f6;
+            transition: width 0.3s;
+        }
+        
+        .login-link a:hover::after {
+            width: 100%;
+        }
+        
+        .login-link a:hover {
+            color: #1e3a8a;
+        }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-home a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-home a:hover {
+            color: #3b82f6;
+            transform: translateX(-4px);
+        }
+        
+        .alert {
+            padding: 1.25rem;
+            border-radius: 14px;
+            margin-bottom: 2rem;
+            border-left: 5px solid;
+            font-size: 0.9rem;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #991b1b;
+            border-left-color: #ef4444;
+        }
+        
+        @media (max-width: 768px) {
+            .register-card {
+                padding: 3rem 2rem;
+            }
+            
+            .welcome-text {
+                font-size: 1.75rem;
+            }
+            
+            .logo-image {
+                width: 110px;
+                height: 110px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div class="logo-section">
+                <img src="{{ asset('images/beeline-logo.png') }}" alt="Beeline Banking" class="logo-image">
+                <h1 class="welcome-text">Créer un compte</h1>
+                <p class="subtitle-text">Rejoignez la communauté Beeline Banking dès aujourd'hui</p>
+            </div>
+
+            <form method="post">
+            
+            <div class="form-section-title">
+                <i class="bi bi-person-badge-fill"></i> Type de compte
+            </div>
+            
+            <div class="role-selector">
+                <label class="role-option">
+                    <input type="radio" name="role" value="client" checked>
+                    <div class="role-card">
+                        <div class="role-icon">👤</div>
+                        <div class="role-name">Client</div>
+                        <div class="role-desc">Compte particulier</div>
+                    </div>
+                </label>
+                <label class="role-option">
+                    <input type="radio" name="role" value="agent">
+                    <div class="role-card">
+                        <div class="role-icon">💼</div>
+                        <div class="role-name">Agent Bancaire</div>
+                        <div class="role-desc">Compte professionnel</div>
+                    </div>
+                </label>
+            </div>
+
+            <div class="form-section-title">
+                <i class="bi bi-person-fill"></i> Informations personnelles
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Nom <span class="required-star">*</span></label>
+                        <input type="text" name="nom" class="form-control" placeholder="Votre nom" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Prénom <span class="required-star">*</span></label>
+                        <input type="text" name="prenom" class="form-control" placeholder="Votre prénom" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email <span class="required-star">*</span></label>
+                <input type="email" name="email" class="form-control" placeholder="votre.email@exemple.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Téléphone <span class="required-star">*</span></label>
+                <input type="tel" name="telephone" class="form-control" placeholder="+216 XX XXX XXX" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Banque <span class="required-star">*</span></label>
+                <select name="banque" class="form-select" required>
+                    <option value="">-- Sélectionnez une banque --</option>
+                    {% for banque in banques %}
+                        <option value="{{ banque.id }}">{{ banque.nomBq }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-section-title">
+                <i class="bi bi-shield-lock-fill"></i> Sécurité
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mot de passe <span class="required-star">*</span></label>
+                <input type="password" name="plainPassword" class="form-control" placeholder="Minimum 6 caractères" required minlength="6">
+            </div>
+
+            <button type="submit" class="btn-register">
+                <i class="bi bi-person-plus-fill me-2"></i>Créer mon compte
+            </button>
+            </form>
+
+            <div class="divider">
+                <span>Déjà client Beeline?</span>
+            </div>
+
+            <div class="login-link">
+                Vous avez déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a>
+            </div>
+
+            <div class="back-home">
+                <a href="{{ path('app_home') }}">
+                    <i class="bi bi-arrow-left"></i>
+                    Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+-- 1. Create and Select Database
+CREATE DATABASE IF NOT EXISTS Projet_PI;
+USE Projet_PI;
+
+-- ==========================================
+-- MODULE: GESTION UTILISATEUR
+-- ==========================================
+
+-- Table: Utilisateur
+CREATE TABLE IF NOT EXISTS Utilisateur (
+    id_util INT AUTO_INCREMENT PRIMARY KEY,
+    nom_u VARCHAR(100) NOT NULL,
+    prenom_u VARCHAR(100) NOT NULL,
+    email_u VARCHAR(150) NOT NULL UNIQUE,
+    telephone VARCHAR(20),
+    adresse VARCHAR(255),
+    mot_de_passe VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN', 'CLIENT', 'AGENT') DEFAULT 'CLIENT',
+    date_inscription DATETIME DEFAULT CURRENT_TIMESTAMP,
+    statut_compte VARCHAR(50) DEFAULT 'ACTIF'
+);
+
+-- Table: Profile (1-to-1 with Utilisateur)
+CREATE TABLE IF NOT EXISTS Profile (
+    id_profile INT AUTO_INCREMENT PRIMARY KEY,
+    niveau_experience VARCHAR(50),
+    preferences TEXT, -- Storing JSON data as TEXT
+    photo VARCHAR(255),
+    bio TEXT,
+    specialite VARCHAR(100),
+    id_util INT NOT NULL,
+    CONSTRAINT fk_profile_user FOREIGN KEY (id_util) REFERENCES Utilisateur(id_util) ON DELETE CASCADE
+);
+
+-- ==========================================
+-- MODULE: GESTION ENTREPRISE (Banque & Agence)
+-- ==========================================
+
+-- Table: Banque
+CREATE TABLE IF NOT EXISTS Banque (
+    id_Bq INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(150),
+    telephone VARCHAR(20),
+    adresse VARCHAR(255),
+    ville VARCHAR(100),
+    code_postal VARCHAR(20),
+    statut VARCHAR(50),
+    activites TEXT
+);
+
+-- Table: Agence (Linked to Banque)
+CREATE TABLE IF NOT EXISTS Agence (
+    id_Aq INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    adresse VARCHAR(255),
+    ville VARCHAR(100),
+    telephone VARCHAR(20),
+    email VARCHAR(150),
+    horaire_ouverture TEXT, -- Can store JSON or string range
+    id_Bq INT NOT NULL,
+    CONSTRAINT fk_agence_banque FOREIGN KEY (id_Bq) REFERENCES Banque(id_Bq) ON DELETE CASCADE
+);
+
+-- ==========================================
+-- MODULE: GESTION OFFRE
+-- ==========================================
+
+-- Table: Offre
+CREATE TABLE IF NOT EXISTS Offre (
+    id_offre INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(150) NOT NULL,
+    description TEXT,
+    date_debut DATE,
+    date_fin DATE,
+    taux_interet FLOAT,
+    montant_max DECIMAL(15, 2),
+    montant_min DECIMAL(15, 2),
+    id_banque INT NOT NULL,
+    CONSTRAINT fk_offre_banque FOREIGN KEY (id_banque) REFERENCES Banque(id_Bq) ON DELETE CASCADE
+);
+
+-- Table: Conditions (Renamed from 'Condition')
+CREATE TABLE IF NOT EXISTS Conditions (
+    id_condition INT AUTO_INCREMENT PRIMARY KEY,
+    taux_special FLOAT,
+    montant_seuil DECIMAL(15, 2),
+    duree_max INT, -- In months or days
+    description TEXT,
+    id_offre INT NOT NULL,
+    CONSTRAINT fk_condition_offre FOREIGN KEY (id_offre) REFERENCES Offre(id_offre) ON DELETE CASCADE
+);
+
+-- Table: GuideOffre (AI/Helper module)
+CREATE TABLE IF NOT EXISTS GuideOffre (
+    id_guide INT AUTO_INCREMENT PRIMARY KEY,
+    version VARCHAR(50),
+    date_maj DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ==========================================
+-- MODULE: GESTION RENDEZ-VOUS
+-- ==========================================
+
+-- Table: Service (Types of appointments/services)
+CREATE TABLE IF NOT EXISTS Service (
+    id_service INT AUTO_INCREMENT PRIMARY KEY,
+    nom_service VARCHAR(100),
+    description TEXT,
+    duree_moyenne INT, -- In minutes
+    priorite_defaut VARCHAR(50),
+    type_service VARCHAR(50)
+);
+
+-- Table: RendezVous
+CREATE TABLE IF NOT EXISTS RendezVous (
+    id_rv INT AUTO_INCREMENT PRIMARY KEY,
+    date_heure DATETIME NOT NULL,
+    duree INT,
+    statut VARCHAR(50) DEFAULT 'PROGRAMME', -- e.g., CONFIRME, ANNULE, TERMINE
+    priorite VARCHAR(50),
+    id_client INT NOT NULL,
+    id_agent INT, -- Can be null initially if no agent assigned
+    id_service INT NOT NULL,
+    CONSTRAINT fk_rv_client FOREIGN KEY (id_client) REFERENCES Utilisateur(id_util) ON DELETE CASCADE,
+    CONSTRAINT fk_rv_agent FOREIGN KEY (id_agent) REFERENCES Utilisateur(id_util) ON DELETE SET NULL,
+    CONSTRAINT fk_rv_service FOREIGN KEY (id_service) REFERENCES Service(id_service)
+);
+
+-- ==========================================
+-- MODULE: GESTION DEMANDE FINANCEMENT
+-- ==========================================
+
+-- Table: DemandeFinancement
+CREATE TABLE IF NOT EXISTS DemandeFinancement (
+    id_demande INT AUTO_INCREMENT PRIMARY KEY,
+    type_dmd VARCHAR(100),
+    date_depot DATETIME DEFAULT CURRENT_TIMESTAMP,
+    statut ENUM('EN_ATTENTE', 'APPROUVEE', 'REFUSEE', 'EN_TRAITEMENT') DEFAULT 'EN_ATTENTE',
+    montant DECIMAL(15, 2),
+    id_client INT NOT NULL,
+    id_offre INT,
+    id_agent INT,
+    CONSTRAINT fk_demande_client FOREIGN KEY (id_client) REFERENCES Utilisateur(id_util) ON DELETE CASCADE,
+    CONSTRAINT fk_demande_offre FOREIGN KEY (id_offre) REFERENCES Offre(id_offre) ON DELETE SET NULL,
+    CONSTRAINT fk_demande_agent FOREIGN KEY (id_agent) REFERENCES Utilisateur(id_util) ON DELETE SET NULL
+);
+
+-- Table: Document
+CREATE TABLE IF NOT EXISTS Document (
+    id_document INT AUTO_INCREMENT PRIMARY KEY,
+    nom_fichier VARCHAR(255),
+    type_document ENUM('CNI', 'JUSTIFICATIF_DOMICILE', 'BULLETIN_SALAIRE', 'AVIS_IMPOSITION', 'CONTRAT', 'AUTRE') DEFAULT 'AUTRE',
+    chemin_stockage VARCHAR(500),
+    date_upload DATETIME DEFAULT CURRENT_TIMESTAMP,
+    statut_verification VARCHAR(50) DEFAULT 'NON_VERIFIE',
+    id_demande INT NOT NULL,
+    CONSTRAINT fk_document_demande FOREIGN KEY (id_demande) REFERENCES DemandeFinancement(id_demande) ON DELETE CASCADE
+);
+
+-- ==========================================
+-- MODULE: AI & TOOLS (Smart Features)
+-- ==========================================
+
+-- Table: AssistantVocal (Configuration)
+CREATE TABLE IF NOT EXISTS AssistantVocal (
+    id_assistant INT AUTO_INCREMENT PRIMARY KEY,
+    langue VARCHAR(50) DEFAULT 'fr-FR',
+    active BOOLEAN DEFAULT TRUE,
+    id_util INT, -- Optional: link config to a user
+    CONSTRAINT fk_assistant_user FOREIGN KEY (id_util) REFERENCES Utilisateur(id_util) ON DELETE CASCADE
+);
+
+-- Table: ChatbotInscription (Configuration/Logs)
+CREATE TABLE IF NOT EXISTS ChatbotInscription (
+    id_chatbot INT AUTO_INCREMENT PRIMARY KEY,
+    nom_bot VARCHAR(100),
+    version VARCHAR(50),
+    date_activation DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table: TraitementDocuments (AI Configuration)
+CREATE TABLE IF NOT EXISTS TraitementDocuments (
+    id_module INT AUTO_INCREMENT PRIMARY KEY,
+    type_IA VARCHAR(100),
+    precision_score FLOAT, -- avoid 'precision' keyword
+    date_maj DATETIME
+);
+
+-- Table: GestionDisponibilite (Logic config)
+CREATE TABLE IF NOT EXISTS GestionDisponibilite (
+    id_module INT AUTO_INCREMENT PRIMARY KEY,
+    parametres TEXT
+);

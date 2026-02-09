@@ -1,0 +1,117 @@
+{% extends 'front/base_client.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <h1 class="mb-3">
+        <i class="bi bi-cash-coin text-success"></i> Demande de financement
+    </h1>
+    <p class="text-muted">Faites votre demande de crédit auprès de {{ banque.nomBq }}</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Formulaire de demande</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    <div class="mb-4">
+                        <label for="montant" class="form-label fw-bold">
+                            <i class="bi bi-currency-dollar text-success"></i> Montant demandé (DT) <span class="text-danger">*</span>
+                        </label>
+                        <input type="number" name="montant" id="montant" class="form-control form-control-lg shadow-sm" 
+                               required min="1000" step="100" placeholder="Ex: 50000">
+                        <small class="text-muted">Montant minimum: 1000 DT</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="duree" class="form-label fw-bold">
+                            <i class="bi bi-calendar-range text-success"></i> Durée (en mois) <span class="text-danger">*</span>
+                        </label>
+                        <select name="duree" id="duree" class="form-select form-select-lg shadow-sm" required>
+                            <option value="">-- Choisissez une durée --</option>
+                            <option value="12">12 mois (1 an)</option>
+                            <option value="24">24 mois (2 ans)</option>
+                            <option value="36">36 mois (3 ans)</option>
+                            <option value="48">48 mois (4 ans)</option>
+                            <option value="60">60 mois (5 ans)</option>
+                            <option value="84">84 mois (7 ans)</option>
+                            <option value="120">120 mois (10 ans)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="objet" class="form-label fw-bold">
+                            <i class="bi bi-flag text-success"></i> Objet du financement <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="objet" id="objet" rows="4" class="form-control form-control-lg shadow-sm" 
+                                  required placeholder="Décrivez l'objet de votre demande de financement..."></textarea>
+                        <small class="text-muted">Soyez précis sur l'utilisation du crédit</small>
+                    </div>
+
+                    <div class="alert alert-info border-0 shadow-sm mb-4">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle"></i> Documents requis
+                        </h6>
+                        <ul class="small mb-0">
+                            <li>Pièce d'identité nationale (CIN)</li>
+                            <li>Justificatifs de revenus (3 derniers mois)</li>
+                            <li>Relevé bancaire</li>
+                            <li>Justificatif de domicile</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-lg text-white shadow-lg" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="bi bi-send-check"></i> Envoyer ma demande
+                        </button>
+                        <a href="{{ path('client_dashboard') }}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-arrow-left"></i> Retour au dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4 border-0 bg-light">
+            <div class="card-body">
+                <h6 class="text-muted mb-3"><i class="bi bi-clock-history"></i> Processus de validation</h6>
+                <div class="row text-center g-3">
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="bi bi-1-circle-fill text-primary" style="font-size: 2rem;"></i>
+                            <p class="small mb-0 mt-2">Soumission</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="bi bi-2-circle-fill text-info" style="font-size: 2rem;"></i>
+                            <p class="small mb-0 mt-2">Examen (48h)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="bi bi-3-circle-fill text-warning" style="font-size: 2rem;"></i>
+                            <p class="small mb-0 mt-2">Validation</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3">
+                            <i class="bi bi-4-circle-fill text-success" style="font-size: 2rem;"></i>
+                            <p class="small mb-0 mt-2">Déblocage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control:focus, .form-select:focus {
+        border-color: #43e97b;
+        box-shadow: 0 0 0 0.2rem rgba(67, 233, 123, 0.25);
+    }
+</style>
+{% endblock %}

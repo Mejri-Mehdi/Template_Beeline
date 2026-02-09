@@ -1,0 +1,180 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block body %}
+<div class="mb-4">
+    <h1>Tableau de bord administrateur</h1>
+    <p class="text-muted">Vue d'ensemble du système</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-primary">
+            <div class="card-body">
+                <h6 class="text-muted">Total utilisateurs</h6>
+                <h2>{{ stats.total_users }}</h2>
+                <small class="text-muted">{{ stats.total_clients }} clients, {{ stats.total_agents }} agents</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-warning">
+            <div class="card-body">
+                <h6 class="text-muted">Utilisateurs en attente</h6>
+                <h2>{{ stats.pending_users }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success">
+            <div class="card-body">
+                <h6 class="text-muted">Total banques</h6>
+                <h2>{{ stats.total_banques }}</h2>
+                <small class="text-muted">{{ stats.active_banques }} actives</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-danger">
+            <div class="card-body">
+                <h6 class="text-muted">Banques en attente</h6>
+                <h2>{{ stats.pending_banques }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Utilisateurs en attente d'approbation</h5>
+            </div>
+            <div class="card-body">
+                {% if pending_users|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in pending_users %}
+                                    <tr>
+                                        <td>{{ user.nom }} {{ user.prenom }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            {% if user.isAgent %}
+                                                <span class="badge bg-info">Agent</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Client</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <form method="post" class="d-inline">
+                                                <button formaction="{{ path('admin_user_approve', {id: user.id}) }}" class="btn btn-sm btn-success">Approuver</button>
+                                                <button formaction="{{ path('admin_user_reject', {id: user.id}) }}" class="btn btn-sm btn-danger">Rejeter</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Aucun utilisateur en attente</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Banques en attente d'approbation</h5>
+            </div>
+            <div class="card-body">
+                {% if pending_banques|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for banque in pending_banques %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ banque.nomBq }}</strong><br>
+                                        <small class="text-muted">{{ banque.emailBq }}</small>
+                                    </div>
+                                    <form method="post" class="d-inline">
+                                        <button formaction="{{ path('admin_banque_approve', {id: banque.id}) }}" class="btn btn-sm btn-success">Approuver</button>
+                                        <button formaction="{{ path('admin_banque_reject', {id: banque.id}) }}" class="btn btn-sm btn-danger">Rejeter</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">Aucune banque en attente</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Utilisateurs récents</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_users|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_users %}
+                                    <tr>
+                                        <td>{{ user.id }}</td>
+                                        <td>{{ user.nom }} {{ user.prenom }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            {% if user.isAdmin %}
+                                                <span class="badge bg-danger">Admin</span>
+                                            {% elseif user.isAgent %}
+                                                <span class="badge bg-info">Agent</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Client</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if user.statutCompte == 'active' %}
+                                                <span class="badge bg-success">Actif</span>
+                                            {% elseif user.statutCompte == 'pending' %}
+                                                <span class="badge bg-warning">En attente</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Bloqué</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Aucun utilisateur</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

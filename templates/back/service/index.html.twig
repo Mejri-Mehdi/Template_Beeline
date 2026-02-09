@@ -1,0 +1,67 @@
+{% extends 'back/base_agent.html.twig' %}
+
+{% block body %}
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h2 style="color: var(--dark-gray); font-weight: 700;">Services</h2>
+        <p style="color: var(--medium-gray);">{{ banque.nomBq }}</p>
+    </div>
+    <a href="{{ path('agent_service_new') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nouveau service
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if services|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background-color: var(--light-gray);">
+                        <tr>
+                            <th>Nom du service</th>
+                            <th>Description</th>
+                            <th>Durée estimée</th>
+                            <th>Disponibilité</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                            <tr>
+                                <td style="font-weight: 600; color: var(--dark-gray);">{{ service.nomService }}</td>
+                                <td>{{ service.description|length > 60 ? service.description|slice(0, 60) ~ '...' : service.description }}</td>
+                                <td>{{ service.dureeEstimee }} min</td>
+                                <td>
+                                    {% if service.disponible %}
+                                        <span class="badge bg-success">Disponible</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Non disponible</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('agent_service_edit', {id: service.id}) }}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form method="post" action="{{ path('agent_service_delete', {id: service.id}) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr ?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-list-check" style="font-size: 4rem; color: var(--medium-gray);"></i>
+                <p style="color: var(--medium-gray); margin-top: 1rem;">Aucun service</p>
+                <a href="{{ path('agent_service_new') }}" class="btn btn-primary mt-3">
+                    <i class="bi bi-plus-circle"></i> Créer le premier service
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
