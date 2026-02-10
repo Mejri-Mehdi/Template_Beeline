@@ -21,6 +21,12 @@ class RendezVous
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $heure_rdv = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $duree = null; // in minutes
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $priorite = 'medium'; // low, medium, high
+
     #[ORM\Column(length: 20)]
     private ?string $statut = 'pending'; // pending, confirmed, cancelled, completed
 
@@ -203,7 +209,30 @@ class RendezVous
             'completed' => 'Terminé',
             'pending' => 'En attente',
             'cancelled' => 'Annulé',
+            'cancelled' => 'Annulé',
             default => $this->statut,
         };
+    }
+
+    public function getDuree(): ?int
+    {
+        return $this->duree;
+    }
+
+    public function setDuree(?int $duree): static
+    {
+        $this->duree = $duree;
+        return $this;
+    }
+
+    public function getPriorite(): ?string
+    {
+        return $this->priorite;
+    }
+
+    public function setPriorite(?string $priorite): static
+    {
+        $this->priorite = $priorite;
+        return $this;
     }
 }

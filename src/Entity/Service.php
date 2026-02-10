@@ -26,6 +26,9 @@ class Service
     #[ORM\Column(nullable: true)]
     private ?int $duree_estimee = null; // Duration in minutes
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $priorite_defaut = 'medium';
+
     #[ORM\Column]
     private ?bool $disponible = true;
 
@@ -133,5 +136,16 @@ class Service
     public function __toString(): string
     {
         return $this->nom_service ?? '';
+    }
+
+    public function getPrioriteDefaut(): ?string
+    {
+        return $this->priorite_defaut;
+    }
+
+    public function setPrioriteDefaut(?string $priorite_defaut): static
+    {
+        $this->priorite_defaut = $priorite_defaut;
+        return $this;
     }
 }

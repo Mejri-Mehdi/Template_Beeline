@@ -61,6 +61,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Financement::class, orphanRemoval: true)]
     private Collection $financements;
 
+    #[ORM\OneToOne(mappedBy: 'utilisateur', cascade: ['persist', 'remove'])]
+    private ?Profile $profile = null;
+
     public function __construct()
     {
         $this->rendezVous = new ArrayCollection();
@@ -294,5 +297,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function isClient(): bool
     {
         return in_array('ROLE_CLIENT', $this->roles);
+    }
+
+    public function getProfile(): ?Profile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(Profile $profile): static
+    {
+        // set the owning side of the relation if necessary
+        if ($profile->getUtilisateur() !== $this) {
+            $profile->setUtilisateur($this);
+        }
+
+        $this->profile = $profile;
+
+        return $this;
     }
 }

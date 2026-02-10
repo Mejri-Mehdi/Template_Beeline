@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\FinancementRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: FinancementRepository::class)]
 #[ORM\Table(name: 'financement')]
@@ -44,9 +46,19 @@ class Financement
     #[ORM\JoinColumn(nullable: false)]
     private ?Banque $banque = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $type_dmd = null;
+
+    #[ORM\ManyToOne(inversedBy: 'financements')]
+    private ?Offre $offre = null;
+
+    #[ORM\OneToMany(mappedBy: 'financement', targetEntity: Document::class, orphanRemoval: true)]
+    private Collection $documents;
+
     public function __construct()
     {
         $this->date_demande = new \DateTime();
+        $this->documents = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int
@@ -181,5 +193,56 @@ class Financement
             'pending' => 'status-pending',
             default => 'bg-secondary',
         };
+    }
+
+    public function getTypeDmd(): ?string
+    {
+        return $this->type_dmd;
+    }
+
+    public function setTypeDmd(?string $type_dmd): static
+    {
+        $this->type_dmd = $type_dmd;
+        return $this;
+    }
+
+    public function getOffre(): ?Offre
+    {
+        return $this->offre;
+    }
+
+    public function setOffre(?Offre $offre): static
+    {
+        $this->offre = $offre;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): static
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents->add($document);
+            $document->setFinancement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): static
+    {
+        if ($this->documents->removeElement($document)) {
+            if ($document->getFinancement() === $this) {
+                $document->setFinancement(null);
+            }
+        }
+
+        return $this;
     }
 }

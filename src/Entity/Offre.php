@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\OffreRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: OffreRepository::class)]
 #[ORM\Table(name: 'offre')]
@@ -30,8 +32,7 @@ class Offre
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_fin = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $conditions = null;
+
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $taux = null;
@@ -42,6 +43,20 @@ class Offre
     #[ORM\ManyToOne(targetEntity: Banque::class, inversedBy: 'offres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Banque $banque = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
+    private ?string $montant_min = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
+    private ?string $montant_max = null;
+
+    #[ORM\OneToMany(mappedBy: 'offre', targetEntity: Condition::class, orphanRemoval: true)]
+    private Collection $conditions;
+
+    public function __construct()
+    {
+        $this->conditions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,16 +118,7 @@ class Offre
         return $this;
     }
 
-    public function getConditions(): ?string
-    {
-        return $this->conditions;
-    }
 
-    public function setConditions(?string $conditions): static
-    {
-        $this->conditions = $conditions;
-        return $this;
-    }
 
     public function getTaux(): ?string
     {
@@ -169,5 +175,57 @@ class Offre
     public function __toString(): string
     {
         return $this->titre ?? '';
+    }
+
+    public function getMontantMin(): ?string
+    {
+        return $this->montant_min;
+    }
+
+    public function setMontantMin(?string $montant_min): static
+    {
+        $this->montant_min = $montant_min;
+        return $this;
+    }
+
+    public function getMontantMax(): ?string
+    {
+        return $this->montant_max;
+    }
+
+    public function setMontantMax(?string $montant_max): static
+    {
+        $this->montant_max = $montant_max;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Condition>
+     */
+    public function getConditions(): Collection
+    {
+        return $this->conditions;
+    }
+
+    public function addCondition(Condition $condition): static
+    {
+        if (!$this->conditions->contains($condition)) {
+            $this->conditions->add($condition);
+            $condition->setOffre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCondition(Condition $condition): static
+    {
+        if ($this->conditions->removeElement($condition)) {
+            // set the owning side to null (unless already changed)
+            if ($condition->getOffre() === $this) {
+                $condition->setOffre(null);
+            }
+        }
+
+        return $this;
     }
 }

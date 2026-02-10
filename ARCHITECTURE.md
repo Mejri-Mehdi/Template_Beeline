@@ -7,58 +7,83 @@ This project complies with strict separation of concerns, descriptive naming, an
 The controller layer is strictly organized by "Space" and uses descriptive names:
 
 ### 🌍 Public Space (`src/Controller/Public/`)
-*For pages accessible to everyone (User, Anonymous)*
-- namespace: `App\Controller\Public`
-- `HomeController`: Landing page
-- `SecurityController`: Login, Logout
-- `RegistrationController`: Registration
+*For pages accessible to everyone*
+- `HomeController`
+- `SecurityController`
+- `RegistrationController`
 
 ### 🤝 Shared Space (`src/Controller/Shared/`)
 *For features common to multiple roles*
-- namespace: `App\Controller\Shared`
-- `ProfileController`: User profile management
-
-### 🏢 Agent Space (`src/Controller/Back/`)
-*Restricted to `ROLE_AGENT`. Controllers are prefixed with `Agent`.*
-- namespace: `App\Controller\Back`
-- `AgentDashboardController`: Main Agent Dashboard
-- `AgentBanqueController`: Management of Bank and Agencies
-- `AgentOffreController`: Management of Offers
-- `AgentRendezVousController`: Management of Appointments
-- `Agent*Controller`: Other agent features
-
-### 👤 Client Space (`src/Controller/Front/`)
-*Restricted to `ROLE_CLIENT`. Controllers are prefixed with `Client`.*
-- namespace: `App\Controller\Front`
-- `ClientDashboardController`: Main Client Dashboard
-- `ClientBanqueController`: Bank viewing for clients
-- `ClientOffreController`: Offer viewing
-- `ClientRendezVousController`: Appointment booking
-- `Client*Controller`: Other client features
+- `ProfileController`
 
 ### 🛡️ Admin Space (`src/Controller/Admin/`)
-*Restricted to `ROLE_ADMIN`. Controllers are prefixed with `Admin`.*
-- namespace: `App\Controller\Admin`
-- `AdminDashboardController`: Main Admin Dashboard
-- `AdminBanqueController`: Bank administration
-- `AdminUtilisateurController`: User administration
-- `Admin*Controller`: Other admin features
+*Restricted to `ROLE_ADMIN`*
+- `AdminDashboardController`
+- `AdminUtilisateurController`
+- `AdminBanqueController`
+- `AdminRendezVousController`
+- `AdminOffreController`
+- `AdminServiceController`
+- `AdminFinancementController`
+
+### 👤 Client Space (`src/Controller/Front/`)
+*Restricted to `ROLE_CLIENT`*
+- `ClientDashboardController`
+- `ClientRendezVousController`
+- `ClientServiceController`
+- `ClientOffreController`
+- `ClientFinancementController`
+- `ClientBanqueController`
+- `ClientAutresBanquesController`
+
+### 🏢 Agent Space (`src/Controller/Back/`)
+*Restricted to `ROLE_AGENT`*
+- `AgentDashboardController`
+- `AgentRendezVousController`
+- `AgentServiceController`
+- `AgentOffreController`
+- `AgentFinancementController`
+- `AgentBanqueController`
 
 ---
 
-## 🎨 2. Templates (`templates/`)
+## 🗄️ 2. Entities (`src/Entity/`)
 
-The view layer mirrors the controller structure:
+Strictly aligned with UML design:
+
+### User & Profile
+- **Utilisateur**: Core user entity (Roles: Admin, Agent, Client).
+- **Profile** (New, 1-to-1): Stores extended details (Experience, Preferences, Bio).
+
+### Banking Core
+- **Banque**: The bank entity.
+- **Agence**: Branches of a bank.
+- **Service**: Services offered (with `priorite_defaut`).
+
+### Offers & Finance
+- **Offre**: Bank offers (with `montant_min/max`).
+- **Condition** (New, Many-to-1): Specific conditions for offers (thresholds, rates).
+- **Financement**: Loan requests (with `type_dmd`).
+- **Document** (New, Many-to-1): Documents attached to financing requests.
+
+### Interactions
+- **RendezVous**: Appointments (with `duree`, `priorite`).
+
+---
+
+## 🎨 3. Templates (`templates/`)
+
+Mirroring controller structure:
 - `templates/public/`
 - `templates/shared/`
-- `templates/front/` (Client)
-- `templates/back/` (Agent)
-- `templates/admin/` (Admin)
+- `templates/front/`
+- `templates/back/`
+- `templates/admin/`
 
 ---
 
-## 📝 Key Changes Implemented
-- **Descriptive Naming**: usage of `Agent...`, `Client...`, `Admin...` prefixes for clarity.
-- **Strict Separation**: No logic in root namespace.
-- **Cleanup**: Removal of mock/legacy controllers (`BanqueController`, `AgenceController`) in favor of real implementations (`AgentBanqueController`, etc.).
-- **Sidebar Integration**: Sidebar links updated to point to the correct, functional controllers.
+## ✅ Key Changes
+- **Full Module Coverage**: Controllers for all defined modules.
+- **UML Compliance**: Added `Profile`, `Condition`, `Document`, and all missing fields.
+- **Strict Separation**: No logic in root namespaces.
+- **Real Data**: Admin controllers wired to Repositories.
